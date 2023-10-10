@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-rest-api/schemas"
+	"rentify/schemas"
 
 	"github.com/spf13/viper"
 )

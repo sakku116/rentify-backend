@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-rest-api/schemas"
 	"log"
+	"rentify/schemas"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"

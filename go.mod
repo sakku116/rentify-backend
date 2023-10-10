@@ -1,4 +1,4 @@
-module go-rest-api
+module rentify
 
 go 1.20
 
