@@ -2,13 +2,15 @@ package main
 
 import (
 	"log"
-	"rentify/schemas"
-
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
-var Envs schemas.Envs
+type EnvsSchema struct {
+	ADDR string
+}
+
+var Envs EnvsSchema
 
 func init() {
 	err := godotenv.Load()

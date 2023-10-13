@@ -1,13 +1,12 @@
 package main
 
-import (
-	"rentify/schemas"
 
+import (
 	"github.com/spf13/viper"
 )
 
-func GetEnv() schemas.Envs {
-	return schemas.Envs{
+func GetEnv() EnvsSchema {
+	return EnvsSchema{
 		ADDR: viper.GetString("ADDR"),
 	}
 }
