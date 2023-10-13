@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -13,4 +14,5 @@ func main() {
 	router := gin.Default()
 	SetupRouter(router)
 	router.Run(Envs.ADDR)
+	fmt.Println("starting rest api app...")
 }

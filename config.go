@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
@@ -21,6 +22,5 @@ func init() {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	log.Println("loading .env file to Envs variable")
 	Envs = GetEnv()
 }
