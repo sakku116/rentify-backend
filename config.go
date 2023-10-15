@@ -11,6 +11,12 @@ type EnvsSchema struct {
 	ADDR string
 }
 
+func InitEnv() EnvsSchema {
+	return EnvsSchema{
+		ADDR: viper.GetString("ADDR"),
+	}
+}
+
 var Envs EnvsSchema
 
 func init() {
@@ -22,5 +28,5 @@ func init() {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	Envs = GetEnv()
+	Envs = InitEnv()
 }
