@@ -13,15 +13,7 @@ type EnvsSchema struct {
 	JWT_EXP    int
 }
 
-func InitEnv() EnvsSchema {
-	return EnvsSchema{
-		ADDR:       viper.GetString("ADDR"),
-		JWT_SECRET: viper.GetString("JWT_SECRET"),
-		JWT_EXP:    viper.GetInt("JWT_EXP"),
-	}
-}
-
-var Envs EnvsSchema
+var Envs *EnvsSchema
 
 func init() {
 	err := godotenv.Load()
@@ -32,5 +24,9 @@ func init() {
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	Envs = InitEnv()
+	Envs = &EnvsSchema{
+		ADDR:       viper.GetString("ADDR"),
+		JWT_SECRET: viper.GetString("JWT_SECRET"),
+		JWT_EXP:    viper.GetInt("JWT_EXP"),
+	}
 }
