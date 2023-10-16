@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log"
@@ -8,12 +8,16 @@ import (
 )
 
 type EnvsSchema struct {
-	ADDR string
+	ADDR       string
+	JWT_SECRET string
+	JWT_EXP    int
 }
 
 func InitEnv() EnvsSchema {
 	return EnvsSchema{
-		ADDR: viper.GetString("ADDR"),
+		ADDR:       viper.GetString("ADDR"),
+		JWT_SECRET: viper.GetString("JWT_SECRET"),
+		JWT_EXP:    viper.GetInt("JWT_EXP"),
 	}
 }
 
