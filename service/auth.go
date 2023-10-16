@@ -1,4 +1,4 @@
-package services
+package service
 
 type AuthService struct {
 }
@@ -7,6 +7,6 @@ func (self *AuthService) GenerateToken() {
 
 }
 
-func (self *AuthService) CheckToken() bool {
+func (self *AuthService) CheckToken() {
 
 }
