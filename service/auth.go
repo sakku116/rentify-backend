@@ -2,13 +2,15 @@ package service
 
 import (
 	"context"
+	"rentify/entity"
 	"rentify/exception"
 	"rentify/helper"
 	"rentify/repository"
 )
 
 type AuthService struct {
-	userRepo *repository.UserRepo
+	userRepo repository.UserRepo
+	authRepo repository.AuthRepo
 }
 
 // Login authenticates a user with the given username and password.
@@ -25,25 +27,38 @@ type AuthService struct {
 //   - DbObjNotFound: If the user is not found in the database.
 //   - AuthPasswordIncorrect: If the provided password is incorrect.
 //   - InvalidToken: If the authentication token is invalid.
-func (self *AuthService) Login(username string, password string) (string, error) {
+func (slf *AuthService) Login(username string, password string) (string, error) {
 	if username == "" || password == "" {
-		err := exception.AuthUsernameRequired
-		return "", err
+		return "", exception.AuthUsernameRequired
 	}
 
-	user, err := self.userRepo.GetByUsername(context.Background(), username)
+	// check existance by username
+	oldUser, err := slf.userRepo.GetByUsername(context.Background(), username)
 	if err == exception.DbObjNotFound {
 		return "", err
 	}
 
-	isPwMatch := helper.ComparePasswordHash(password, user.Password)
+	// check password
+	isPwMatch := helper.ComparePasswordHash(password, oldUser.Password)
 	if !isPwMatch {
 		return "", exception.AuthPasswordIncorrect
 	}
 
-	return "", nil
+	// generate token
+	newSessionID := helper.GenerateUUID()
+	token, err := slf.authRepo.GenerateAccessToken(username, newSessionID)
+
+	// update session id
+	err = slf.userRepo.Patch(context.Background(), oldUser.ID, &entity.User{
+		SessionID: newSessionID,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
-func (self *AuthService) CheckToken() {
+func (slf *AuthService) CheckToken() {
 
 }
