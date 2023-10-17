@@ -14,13 +14,13 @@ func NewAuthRepo() *AuthRepo {
 	return &AuthRepo{}
 }
 
-func (self *AuthRepo) GenerateAccessToken(username string, exp_hours int, token_id string) (string, error) {
+func (self *AuthRepo) GenerateAccessToken(username string, session_id string) (string, error) {
 	secretKey := []byte(config.Envs.JWT_SECRET)
 
 	claims := jwt.MapClaims{
-		"username": "username",
-		"exp":      time.Now().Add(time.Hour * time.Duration(exp_hours)).Unix(),
-		"token_id": token_id,
+		"username":   "username",
+		"exp":        time.Now().Add(time.Hour * time.Duration(config.Envs.JWT_EXP)).Unix(),
+		"session_id": session_id,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
