@@ -3,7 +3,9 @@ package helper
 import (
 	"reflect"
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -58,4 +60,22 @@ func IsZero(value reflect.Value) bool {
 		zeroValue := reflect.Zero(value.Type()).Interface()
 		return reflect.DeepEqual(value.Interface(), zeroValue)
 	}
+}
+
+func GenerateJwtToken(username string, session_id string, secret_key string, exp int) (string, error) {
+	secretKey := []byte(secret_key)
+
+	claims := jwt.MapClaims{
+		"username":   "username",
+		"exp":        time.Now().Add(time.Hour * time.Duration(exp)).Unix(),
+		"session_id": session_id,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	accessToken, err := token.SignedString(secretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return accessToken, nil
 }

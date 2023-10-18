@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"rentify/config"
 	"rentify/entity"
 	"rentify/exception"
 	"rentify/helper"
@@ -10,23 +11,8 @@ import (
 
 type AuthService struct {
 	userRepo repository.UserRepo
-	authRepo repository.AuthRepo
 }
 
-// Login authenticates a user with the given username and password.
-//
-// Parameters:
-// - username: The username of the user.
-// - password: The password of the user.
-//
-// Returns:
-// - string: The authentication token if the login is successful.
-// - error: An error if there is any issue during the login process.
-//   - AuthUsernameRequired: If the username is empty.
-//   - AuthPasswordRequired: If the password is empty.
-//   - DbObjNotFound: If the user is not found in the database.
-//   - AuthPasswordIncorrect: If the provided password is incorrect.
-//   - InvalidToken: If the authentication token is invalid.
 func (slf *AuthService) Login(username string, password string) (string, error) {
 	if username == "" || password == "" {
 		return "", exception.AuthUsernameRequired
@@ -46,9 +32,12 @@ func (slf *AuthService) Login(username string, password string) (string, error) 
 
 	// generate token
 	newSessionID := helper.GenerateUUID()
-	token, err := slf.authRepo.GenerateAccessToken(username, newSessionID)
+	token, err := helper.GenerateJwtToken(username, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
+	if err != nil {
+		return "", err
+	}
 
-	// update session id
+	// update session id from user
 	err = slf.userRepo.Patch(context.Background(), oldUser.ID, &entity.User{
 		SessionID: newSessionID,
 	})
