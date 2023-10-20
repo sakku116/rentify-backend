@@ -11,6 +11,7 @@ type EnvsSchema struct {
 	ADDR       string
 	JWT_SECRET string
 	JWT_EXP    int
+	MONGO_URI  string
 }
 
 var Envs *EnvsSchema
@@ -28,5 +29,6 @@ func init() {
 		ADDR:       viper.GetString("ADDR"),
 		JWT_SECRET: viper.GetString("JWT_SECRET"),
 		JWT_EXP:    viper.GetInt("JWT_EXP"),
+		MONGO_URI:  viper.GetString("MONGO_URI"),
 	}
 }
