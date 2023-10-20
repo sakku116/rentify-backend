@@ -10,6 +10,6 @@ func SetupRouter(router *gin.Engine) {
 		})
 	})
 
-	// router.POST("/auth/generate-token")
-	// router.GET("/auth/check-token")
+	router.POST("/auth/login")
+	router.GET("/auth/check-token")
 }
