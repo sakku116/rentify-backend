@@ -9,16 +9,16 @@ import (
 )
 
 type AuthHandler struct {
-	authService *service.AuthService
+	authService service.AuthService
 }
 
-func NewAuthHandler(authService *service.AuthService) *AuthHandler {
-	return &AuthHandler{
+func NewAuthHandler(authService service.AuthService) AuthHandler {
+	return AuthHandler{
 		authService: authService,
 	}
 }
 
-func (slf *AuthHandler) Login() (ctx *gin.Context) {
+func (slf *AuthHandler) Login(ctx *gin.Context) {
 	var payload dto.PostLoginReq
 	err := ctx.ShouldBindJSON(&payload)
 	if err != nil {
