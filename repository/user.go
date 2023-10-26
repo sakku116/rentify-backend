@@ -29,8 +29,8 @@ func (slf *UserRepo) Create(ctx context.Context, user *entity.User) error {
 	return nil
 }
 
-func (slf *UserRepo) Update(ctx context.Context, id string, update bson.M) error {
-	err := slf.coll.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": update})
+func (slf *UserRepo) Update(ctx context.Context, update *entity.User) error {
+	err := slf.coll.UpdateOne(ctx, bson.M{"id": update.ID}, bson.M{"$set": update})
 	if err != nil {
 		return err
 	}
