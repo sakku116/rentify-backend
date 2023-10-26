@@ -13,9 +13,9 @@ func CliHandler(args []string) {
 	args = args[1:]
 	ctx := context.Background()
 
-	mongoConn := config.NewMongoConn(context.Background())
-	mongoDB := mongoConn.Database("rentify")
+	mongoConn := config.NewMongoConn(ctx)
 	defer mongoConn.Close(ctx)
+	mongoDB := mongoConn.Database("rentify")
 
 	userRepo := repository.NewUserRepo(mongoDB.Collection("users"))
 

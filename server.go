@@ -13,7 +13,8 @@ import (
 func SetupRouter(router *gin.Engine) {
 	ctx := context.Background()
 	mongoConn := config.NewMongoConn(ctx)
-	defer mongoConn.Close(ctx)
+	// defer mongoConn.Close(ctx)
+
 	mongoDb := mongoConn.Database("rentify")
 
 	// repositories

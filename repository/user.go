@@ -29,8 +29,8 @@ func (slf *UserRepo) Create(ctx context.Context, user *entity.User) error {
 	return nil
 }
 
-func (slf *UserRepo) Update(ctx context.Context, user *entity.User) error {
-	err := slf.coll.UpdateOne(ctx, bson.M{"id": user.ID}, bson.M{"$set": user})
+func (slf *UserRepo) Update(ctx context.Context, id string, update bson.M) error {
+	err := slf.coll.UpdateOne(ctx, bson.M{"id": id}, bson.M{"$set": update})
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (slf *UserRepo) Patch(ctx context.Context, id string, patch_payload *entity
 	err := slf.coll.UpdateOne(
 		ctx,
 		bson.M{"id": id},
-		helper.ParseBsonPatchStruct(patch_payload),
+		bson.M{"$set": helper.ParseBsonPatchStruct(patch_payload)},
 	)
 	if err != nil {
 		return err
@@ -68,10 +68,6 @@ func (slf *UserRepo) GetByUsername(ctx context.Context, username string) (*entit
 	if err == qmgo.ErrNoSuchDocuments {
 		return nil, exception.DbObjNotFound
 	} else if err != nil {
-		return nil, err
-	}
-
-	if err != nil {
 		return nil, err
 	}
 	return &user, nil

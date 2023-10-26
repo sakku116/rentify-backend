@@ -4,7 +4,7 @@ type User struct {
 	ID        string `json:"id" bson:"id" bson_patch:"id,omitempty"`
 	Username  string `json:"username" bson:"username" bson_patch:"username,omitempty"`
 	Password  string `json:"password" bson:"password" bson_patch:"password,omitempty"`
-	IsActive  bool   `json:"is_active" bson:"is_active" bson_patch:"is_active,omitempty"`
+	IsActive  bool   `json:"is_active,omitempty" bson:"is_active" bson_patch:"is_active,omitempty"`
 	SessionID string `json:"session_id" bson:"session_id" bson_patch:"session_id,omitempty"`
 	Role      string `json:"role" bson:"role" bson_patch:"role,omitempty"`
 

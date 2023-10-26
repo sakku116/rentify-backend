@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func ComparePasswordHash(password, hash string) bool {
+func ComparePasswordHash(password string, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
@@ -22,8 +22,8 @@ func GenerateUUID() string {
 }
 
 func ParseBsonPatchStruct(obj interface{}) map[string]interface{} {
-	var result map[string]interface{}
-	val := reflect.ValueOf(obj)
+	var result = make(map[string]interface{})
+	val := reflect.ValueOf(obj).Elem()
 
 	for i := 0; i < val.NumField(); i++ {
 		field := val.Type().Field(i)
@@ -43,9 +43,7 @@ func ParseBsonPatchStruct(obj interface{}) map[string]interface{} {
 			}
 
 			value := val.Field(i).Interface()
-			if omitempty == false {
-				result[tagName] = value
-			}
+			result[tagName] = value
 		}
 	}
 

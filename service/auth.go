@@ -25,8 +25,8 @@ func (slf *AuthService) Login(ctx context.Context, username string, password str
 	}
 
 	// check existance by username
-	oldUser, err := slf.userRepo.GetByUsername(context.Background(), username)
-	if err == exception.DbObjNotFound {
+	oldUser, err := slf.userRepo.GetByUsername(ctx, username)
+	if err != nil {
 		return "", err
 	}
 
@@ -72,7 +72,7 @@ func (slf *AuthService) CheckToken(ctx context.Context, token string) (*entity.U
 		return nil, exception.AuthUserNotFound
 	}
 
-	if !user.IsActive {
+	if user.IsActive == false {
 		return nil, exception.AuthUserBanned
 	}
 
