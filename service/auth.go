@@ -13,6 +13,12 @@ type AuthService struct {
 	userRepo repository.UserRepo
 }
 
+func NewAuthService(userRepo repository.UserRepo) AuthService {
+	return AuthService{
+		userRepo: userRepo,
+	}
+}
+
 func (slf *AuthService) Login(ctx context.Context, username string, password string) (string, error) {
 	if username == "" || password == "" {
 		return "", exception.AuthUserPassRequired

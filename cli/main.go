@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func SeedSuperuser(userRepo *repository.UserRepo) {
+func SeedSuperuser(userRepo repository.UserRepo) {
 	ctx := context.Background()
 
 	// check for existing superuser
