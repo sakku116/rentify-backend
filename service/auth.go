@@ -13,9 +13,9 @@ type AuthService struct {
 	userRepo repository.UserRepo
 }
 
-func (slf *AuthService) Login(username string, password string) (string, error) {
+func (slf *AuthService) Login(ctx context.Context, username string, password string) (string, error) {
 	if username == "" || password == "" {
-		return "", exception.AuthUsernameRequired
+		return "", exception.AuthUserPassRequired
 	}
 
 	// check existance by username
@@ -32,13 +32,13 @@ func (slf *AuthService) Login(username string, password string) (string, error) 
 
 	// generate token
 	newSessionID := helper.GenerateUUID()
-	token, err := helper.GenerateJwtToken(username, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
+	token, err := helper.GenerateJwtToken(username, oldUser.ID, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
 	if err != nil {
 		return "", err
 	}
 
 	// update session id from user
-	err = slf.userRepo.Patch(context.Background(), oldUser.ID, &entity.User{
+	err = slf.userRepo.Patch(ctx, oldUser.ID, &entity.User{
 		SessionID: newSessionID,
 	})
 	if err != nil {
@@ -48,6 +48,27 @@ func (slf *AuthService) Login(username string, password string) (string, error) 
 	return token, nil
 }
 
-func (slf *AuthService) CheckToken() {
+/*
+raises:
+- exception.AuthInvalidToken
+- exception.AuthUserNotFound
+- exception.AuthUserBanned
+*/
+func (slf *AuthService) CheckToken(ctx context.Context, token string) (*entity.User, error) {
+	claims, err := helper.ValidateJWT(token)
+	if err != nil {
+		return nil, exception.AuthInvalidToken
+	}
 
+	userID := claims["user_id"].(string)
+	user, err := slf.userRepo.GetByID(ctx, userID)
+	if err != nil {
+		return nil, exception.AuthUserNotFound
+	}
+
+	if !user.IsActive {
+		return nil, exception.AuthUserBanned
+	}
+
+	return user, nil
 }

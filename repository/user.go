@@ -54,7 +54,9 @@ func (self *UserRepo) Patch(ctx context.Context, id string, patch_payload *entit
 func (self *UserRepo) GetByID(ctx context.Context, id string) (*entity.User, error) {
 	var user entity.User
 	err := self.coll.Find(ctx, bson.M{"id": id}).One(&user)
-	if err != nil {
+	if err == qmgo.ErrNoSuchDocuments {
+		return nil, exception.DbObjNotFound
+	} else if err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -65,6 +67,8 @@ func (self *UserRepo) GetByUsername(ctx context.Context, username string) (*enti
 	err := self.coll.Find(ctx, bson.M{"username": username}).One(&user)
 	if err == qmgo.ErrNoSuchDocuments {
 		return nil, exception.DbObjNotFound
+	} else if err != nil {
+		return nil, err
 	}
 
 	if err != nil {

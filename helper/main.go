@@ -1,7 +1,9 @@
 package helper
 
 import (
+	"fmt"
 	"reflect"
+	"rentify/config"
 	"strings"
 	"time"
 
@@ -62,11 +64,22 @@ func IsZero(value reflect.Value) bool {
 	}
 }
 
-func GenerateJwtToken(username string, session_id string, secret_key string, exp int) (string, error) {
+/*
+return example
+
+	{
+		"username": "fulan",
+		"user_id": "1234",
+		"session_id": "1234",
+		"exp": 12345,
+	}
+*/
+func GenerateJwtToken(username string, user_id string, session_id string, secret_key string, exp int) (string, error) {
 	secretKey := []byte(secret_key)
 
 	claims := jwt.MapClaims{
-		"username":   "username",
+		"username":   username,
+		"user_id":    user_id,
 		"exp":        time.Now().Add(time.Hour * time.Duration(exp)).Unix(),
 		"session_id": session_id,
 	}
@@ -78,4 +91,30 @@ func GenerateJwtToken(username string, session_id string, secret_key string, exp
 	}
 
 	return accessToken, nil
+}
+
+func ValidateJWT(tokenString string) (jwt.MapClaims, error) {
+	var JWT_SIGNING_METHOD = jwt.SigningMethodHS256
+	var JWT_SIGNATURE_KEY = []byte(config.Envs.JWT_SECRET)
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if method, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("signing method invalid")
+		} else if method != JWT_SIGNING_METHOD {
+			return nil, fmt.Errorf("signing method invalid")
+		}
+
+		return JWT_SIGNATURE_KEY, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, err
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	return claims, nil
 }
