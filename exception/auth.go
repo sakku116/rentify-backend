@@ -11,4 +11,6 @@ var (
 	AuthInvalidToken      = fmt.Errorf("invalid token")
 	AuthUserPassRequired  = fmt.Errorf("username and password are required")
 	AuthUserBanned        = fmt.Errorf("user is banned")
+	AuthRoleRequired      = fmt.Errorf("role is not set")
+	AuthInvalidRole       = fmt.Errorf("invalid role")
 )
