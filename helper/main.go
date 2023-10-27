@@ -68,16 +68,18 @@ return example
 	{
 		"username": "fulan",
 		"user_id": "1234",
+		"role": "owner",
 		"session_id": "1234",
 		"exp": 12345,
 	}
 */
-func GenerateJwtToken(username string, user_id string, session_id string, secret_key string, exp int) (string, error) {
+func GenerateJwtToken(username string, user_id string, role string, session_id string, secret_key string, exp int) (string, error) {
 	secretKey := []byte(secret_key)
 
 	claims := jwt.MapClaims{
-		"username":   username,
 		"user_id":    user_id,
+		"username":   username,
+		"role":       role,
 		"exp":        time.Now().Add(time.Hour * time.Duration(exp)).Unix(),
 		"session_id": session_id,
 	}
