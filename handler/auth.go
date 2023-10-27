@@ -249,8 +249,19 @@ func (slf *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
+	// regenerate token
+	token, err := slf.authService.Login(ctx, payload.Username, payload.ConfirmPassword)
+	if err != nil {
+		ctx.JSON(500, gin.H{
+			"error":   true,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	ctx.JSON(200, gin.H{
-		"error":   false,
-		"message": "OK",
+		"error":        false,
+		"message":      "OK",
+		"access_token": token,
 	})
 }
