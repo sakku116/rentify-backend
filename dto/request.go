@@ -8,3 +8,15 @@ type PostLoginReq struct {
 type PostCheckTokenReq struct {
 	Token string `json:"token"`
 }
+
+type PostSetRoleFromTokenReq struct {
+	Token string `json:"token"`
+	Role  string `json:"role"`
+}
+
+type PostRegisterReq struct {
+	Username        string `json:"username"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
