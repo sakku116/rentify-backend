@@ -4,7 +4,6 @@ import (
 	"context"
 	"rentify/entity"
 	"rentify/exception"
-	"rentify/helper"
 
 	"github.com/qiniu/qmgo"
 	"gopkg.in/mgo.v2/bson"
@@ -38,11 +37,11 @@ func (slf *UserRepo) Update(ctx context.Context, update *entity.User) error {
 	return nil
 }
 
-func (slf *UserRepo) Patch(ctx context.Context, id string, patch_payload *entity.User) error {
+func (slf *UserRepo) Patch(ctx context.Context, id string, patch_payload bson.M) error {
 	err := slf.coll.UpdateOne(
 		ctx,
 		bson.M{"id": id},
-		bson.M{"$set": helper.ParseBsonPatchStruct(patch_payload)},
+		bson.M{"$set": patch_payload},
 	)
 	if err != nil {
 		return err

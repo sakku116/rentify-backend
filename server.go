@@ -34,5 +34,5 @@ func SetupRouter(router *gin.Engine) {
 	})
 
 	router.POST("/auth/login", authHandler.Login)
-	router.GET("/auth/check-token", authHandler.CheckToken)
+	router.POST("/auth/check-token", authHandler.CheckToken)
 }

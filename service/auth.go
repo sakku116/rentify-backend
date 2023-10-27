@@ -7,6 +7,8 @@ import (
 	"rentify/exception"
 	"rentify/helper"
 	"rentify/repository"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 type AuthService struct {
@@ -44,8 +46,8 @@ func (slf *AuthService) Login(ctx context.Context, username string, password str
 	}
 
 	// update session id from user
-	err = slf.userRepo.Patch(ctx, oldUser.ID, &entity.User{
-		SessionID: newSessionID,
+	err = slf.userRepo.Patch(ctx, oldUser.ID, bson.M{
+		"session_id": newSessionID,
 	})
 	if err != nil {
 		return "", err
