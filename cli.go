@@ -22,7 +22,7 @@ func CliHandler(args []string) {
 	switch args[0] {
 	case "seed-superuser":
 		fmt.Println("running seed superuser...")
-		cli.SeedSuperuser(userRepo)
+		cli.SeedSuperuser(userRepo, args[1:]...)
 	default:
 		fmt.Println("invalid command")
 		os.Exit(1)
