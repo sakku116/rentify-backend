@@ -40,7 +40,7 @@ func (slf *AuthService) Login(ctx context.Context, username string, password str
 
 	// generate token
 	newSessionID := helper.GenerateUUID()
-	token, err := helper.GenerateJwtToken(username, oldUser.ID, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
+	token, err := helper.GenerateJwtToken(username, oldUser.ID, oldUser.Role, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
 	if err != nil {
 		return "", err
 	}
@@ -79,4 +79,26 @@ func (slf *AuthService) CheckToken(ctx context.Context, token string) (*entity.U
 	}
 
 	return user, nil
+}
+
+/*
+raises:
+- exception.AuthInvalidRole
+- exception.DBObjNotFound
+*/
+func (slf *AuthService) SetRole(ctx context.Context, user_id string, role string) error {
+	// validate role
+	if role != "owner" && role != "customer" {
+		return exception.AuthInvalidRole
+	}
+
+	// update user role
+	err := slf.userRepo.Patch(ctx, user_id, bson.M{
+		role: "superuser",
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

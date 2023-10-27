@@ -35,4 +35,5 @@ func SetupRouter(router *gin.Engine) {
 
 	router.POST("/auth/login", authHandler.Login)
 	router.POST("/auth/check-token", authHandler.CheckToken)
+	router.POST("/auth/set-role", authHandler.SetRoleFromToken)
 }
