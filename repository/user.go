@@ -72,6 +72,17 @@ func (slf *UserRepo) GetByUsername(ctx context.Context, username string) (*entit
 	return &user, nil
 }
 
+func (slf *UserRepo) GetByEmail(ctx context.Context, email string) (*entity.User, error) {
+	var user entity.User
+	err := slf.coll.Find(ctx, bson.M{"email": email}).One(&user)
+	if err == qmgo.ErrNoSuchDocuments {
+		return nil, exception.DbObjNotFound
+	} else if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (slf *UserRepo) GetList(ctx context.Context) ([]entity.User, error) {
 	var users []entity.User
 	err := slf.coll.Find(ctx, bson.M{}).All(&users)

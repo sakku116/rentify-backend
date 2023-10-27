@@ -7,7 +7,9 @@ import (
 	"rentify/exception"
 	"rentify/helper"
 	"rentify/repository"
+	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -96,6 +98,54 @@ func (slf *AuthService) SetRole(ctx context.Context, user_id string, role string
 	err := slf.userRepo.Patch(ctx, user_id, bson.M{
 		role: "superuser",
 	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
+raises:
+- exception.UserAlreadyExistByEmail
+- exception.UserAlreadyExistByUsername
+*/
+func (slf *AuthService) Register(ctx context.Context, username string, email string, password string) error {
+	// TODO: email validation
+	// TODO: password validation
+
+	// user & email existance validation
+	userByUsername, _ := slf.userRepo.GetByUsername(ctx, username)
+	if userByUsername != nil {
+		return exception.UserAlreadyExistByUsername
+	}
+	userByEmail, _ := slf.userRepo.GetByEmail(ctx, email)
+	if userByEmail != nil {
+		return exception.UserAlreadyExistByEmail
+	}
+
+	// hash password
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	// new object creation
+	uuid := helper.GenerateUUID()
+	timeNow := time.Now().Unix()
+	newUser := &entity.User{
+		ID:        uuid,
+		Username:  username,
+		Email:     email,
+		Password:  string(hashedPass),
+		IsActive:  true,
+		Role:      "",
+		CreatedAt: timeNow,
+		UpdatedAt: timeNow,
+		CreatedBy: uuid,
+		UpdatedBy: uuid,
+	}
+	err = slf.userRepo.Create(ctx, newUser)
 	if err != nil {
 		return err
 	}

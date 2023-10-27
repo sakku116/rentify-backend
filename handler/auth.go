@@ -62,7 +62,6 @@ func (slf *AuthHandler) Login(ctx *gin.Context) {
 		"message":      "OK",
 		"access_token": token,
 	})
-	return
 }
 
 func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
@@ -115,7 +114,6 @@ func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 			"role":     user.Role,
 		},
 	})
-	return
 }
 
 func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
@@ -191,6 +189,68 @@ func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
 	})
 }
 
-// func (slf *AuthHandler) register(ctx *gin.Context) {
-// 	var payload dto.PostRegisterReq
-// }
+func (slf *AuthHandler) Register(ctx *gin.Context) {
+	var payload dto.PostRegisterReq
+	err := ctx.ShouldBindJSON(&payload)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"error":   true,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	// validate all field must be filled
+	if payload.Username == "" ||
+		payload.Password == "" ||
+		payload.Email == "" ||
+		payload.ConfirmPassword == "" {
+		ctx.JSON(400, gin.H{
+			"error":   true,
+			"message": "username and password are required",
+		})
+		return
+	}
+
+	// match password validation
+	if payload.Password != payload.ConfirmPassword {
+		ctx.JSON(400, gin.H{
+			"error":   true,
+			"message": "password and confirm password must be same",
+		})
+		return
+	}
+
+	err = slf.authService.Register(ctx, payload.Username, payload.Email, payload.Password)
+	if err != nil {
+		switch err {
+		case exception.UserAlreadyExistByEmail:
+			ctx.JSON(
+				400, gin.H{
+					"error":   true,
+					"message": fmt.Sprintf("user with email %s already exist", payload.Email),
+				},
+			)
+		case exception.UserAlreadyExistByUsername:
+			ctx.JSON(
+				400, gin.H{
+					"error":   true,
+					"message": fmt.Sprintf("user with username %s already exist", payload.Username),
+				},
+			)
+		default:
+			ctx.JSON(
+				500, gin.H{
+					"error":   true,
+					"message": err.Error(),
+				},
+			)
+		}
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"error":   false,
+		"message": "OK",
+	})
+}

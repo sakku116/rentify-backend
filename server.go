@@ -4,6 +4,7 @@ import (
 	"context"
 	"rentify/config"
 	"rentify/handler"
+	"rentify/middleware"
 	"rentify/repository"
 	"rentify/service"
 
@@ -36,4 +37,11 @@ func SetupRouter(router *gin.Engine) {
 	router.POST("/auth/login", authHandler.Login)
 	router.POST("/auth/check-token", authHandler.CheckToken)
 	router.POST("/auth/set-role", authHandler.SetRoleFromToken)
+	router.POST("/auth/register", authHandler.Register)
+
+	secureRouter := router.Group("/")
+	{
+		secureRouter.Use(middleware.JWTMiddleware(authService))
+
+	}
 }
