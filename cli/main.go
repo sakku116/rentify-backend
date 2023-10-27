@@ -35,6 +35,7 @@ func SeedSuperuser(userRepo repository.UserRepo) {
 	user := &entity.User{
 		ID:        uuid,
 		Username:  "superuser",
+		Email:     "superuser@gmail.com",
 		Password:  string(hashedPass),
 		IsActive:  true,
 		Role:      "superuser",
