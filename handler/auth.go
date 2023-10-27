@@ -21,7 +21,7 @@ func NewAuthHandler(authService service.AuthService) AuthHandler {
 
 func (slf *AuthHandler) Login(ctx *gin.Context) {
 	var payload dto.PostLoginReq
-	err := ctx.ShouldBindJSON(&payload)
+	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
 			"error":   true,
@@ -66,7 +66,7 @@ func (slf *AuthHandler) Login(ctx *gin.Context) {
 
 func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 	var payload dto.PostCheckTokenReq
-	err := ctx.ShouldBindJSON(&payload)
+	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
 			"error":   true,
@@ -118,7 +118,7 @@ func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 
 func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
 	var payload dto.PostSetRoleFromTokenReq
-	err := ctx.ShouldBindJSON(&payload)
+	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
 			"error":   true,
@@ -191,7 +191,7 @@ func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
 
 func (slf *AuthHandler) Register(ctx *gin.Context) {
 	var payload dto.PostRegisterReq
-	err := ctx.ShouldBindJSON(&payload)
+	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
 			"error":   true,

@@ -139,7 +139,7 @@ func (slf *AuthService) Register(ctx context.Context, username string, email str
 		Email:     email,
 		Password:  string(hashedPass),
 		IsActive:  true,
-		Role:      "",
+		Role:      "customer",
 		CreatedAt: timeNow,
 		UpdatedAt: timeNow,
 		CreatedBy: uuid,
