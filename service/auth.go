@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"rentify/config"
 	"rentify/domain/entity"
-	"rentify/exception"
 	"rentify/repository"
+	error_utils "rentify/utils/error"
 	"rentify/utils/helper"
 	"time"
 
@@ -25,26 +26,38 @@ func NewAuthService(userRepo repository.UserRepo) AuthService {
 
 func (slf *AuthService) Login(ctx context.Context, username string, password string) (string, error) {
 	if username == "" || password == "" {
-		return "", exception.AuthUserPassRequired
+		return "", &error_utils.CustomErr{
+			Code:    400,
+			Message: "username and password are required",
+		}
 	}
 
 	// check existance by username
 	oldUser, err := slf.userRepo.GetByUsername(ctx, username)
 	if err != nil {
-		return "", err
+		return "", &error_utils.CustomErr{
+			Code:    404,
+			Message: "user not found",
+		}
 	}
 
 	// check password
 	isPwMatch := helper.ComparePasswordHash(password, oldUser.Password)
 	if !isPwMatch {
-		return "", exception.AuthPasswordIncorrect
+		return "", &error_utils.CustomErr{
+			Code:    401,
+			Message: "password incorrect",
+		}
 	}
 
 	// generate token
 	newSessionID := helper.GenerateUUID()
 	token, err := helper.GenerateJwtToken(username, oldUser.ID, oldUser.Role, newSessionID, config.Envs.JWT_SECRET, config.Envs.JWT_EXP)
 	if err != nil {
-		return "", err
+		return "", &error_utils.CustomErr{
+			Code:    500,
+			Message: "error when generating jwt token",
+		}
 	}
 
 	// update session id from user
@@ -52,46 +65,57 @@ func (slf *AuthService) Login(ctx context.Context, username string, password str
 		"session_id": newSessionID,
 	})
 	if err != nil {
-		return "", err
+		return "", &error_utils.CustomErr{
+			Code:    404,
+			Message: fmt.Sprintf("user with id %s not found", oldUser.ID),
+		}
 	}
 
 	return token, nil
 }
 
-/*
-raises:
-- exception.AuthInvalidToken
-- exception.AuthUserNotFound
-- exception.AuthUserBanned
-*/
 func (slf *AuthService) CheckToken(ctx context.Context, token string) (*entity.User, error) {
 	claims, err := helper.ValidateJWT(token)
 	if err != nil {
-		return nil, exception.AuthInvalidToken
+		return nil, &error_utils.CustomErr{
+			Code:    401,
+			Message: "invalid token",
+		}
 	}
 
 	userID := claims["user_id"].(string)
 	user, err := slf.userRepo.GetByID(ctx, userID)
 	if err != nil {
-		return nil, exception.AuthUserNotFound
+		return nil, &error_utils.CustomErr{
+			Code:    404,
+			Message: "user not found",
+		}
 	}
 
 	if !user.IsActive {
-		return nil, exception.AuthUserBanned
+		return nil, &error_utils.CustomErr{
+			Code:    403,
+			Message: "user is banned",
+		}
+	}
+
+	if user.Role == "" {
+		return nil, &error_utils.CustomErr{
+			Code:    403,
+			Message: "role is not set",
+		}
 	}
 
 	return user, nil
 }
 
-/*
-raises:
-- exception.AuthInvalidRole
-- exception.DBObjNotFound
-*/
 func (slf *AuthService) SetRole(ctx context.Context, user_id string, role string) error {
 	// validate role
 	if role != "owner" && role != "customer" {
-		return exception.AuthInvalidRole
+		return &error_utils.CustomErr{
+			Code:    400,
+			Message: "invalid role",
+		}
 	}
 
 	// update user role
@@ -99,26 +123,30 @@ func (slf *AuthService) SetRole(ctx context.Context, user_id string, role string
 		role: "superuser",
 	})
 	if err != nil {
-		return err
+		return &error_utils.CustomErr{
+			Code:    404,
+			Message: fmt.Sprintf("user with id %s not found", user_id),
+		}
 	}
 
 	return nil
 }
 
-/*
-raises:
-- exception.UserAlreadyExistByEmail
-- exception.UserAlreadyExistByUsername
-*/
 func (slf *AuthService) Register(ctx context.Context, username string, email string, password string) error {
 	// user & email existance validation
 	userByUsername, _ := slf.userRepo.GetByUsername(ctx, username)
 	if userByUsername != nil {
-		return exception.UserAlreadyExistByUsername
+		return &error_utils.CustomErr{
+			Code:    400,
+			Message: "username already exist",
+		}
 	}
 	userByEmail, _ := slf.userRepo.GetByEmail(ctx, email)
 	if userByEmail != nil {
-		return exception.UserAlreadyExistByEmail
+		return &error_utils.CustomErr{
+			Code:    400,
+			Message: "email already exist",
+		}
 	}
 
 	// hash password

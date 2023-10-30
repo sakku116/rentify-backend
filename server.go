@@ -7,6 +7,7 @@ import (
 	"rentify/middleware"
 	"rentify/repository"
 	"rentify/service"
+	"rentify/utils/http_response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,7 @@ func SetupRouter(router *gin.Engine) {
 	// defer mongoConn.Close(ctx)
 
 	mongoDb := mongoConn.Database("rentify")
+	responseWriter := http_response.NewResponseWriter()
 
 	// repositories
 	userRepo := repository.NewUserRepo(mongoDb.Collection("users"))
@@ -25,7 +27,7 @@ func SetupRouter(router *gin.Engine) {
 	authService := service.NewAuthService(userRepo)
 
 	// handlers
-	authHandler := handler.NewAuthHandler(authService)
+	authHandler := handler.NewAuthHandler(responseWriter, authService)
 
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
