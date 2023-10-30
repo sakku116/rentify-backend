@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"rentify/dto"
+	"rentify/domain/rest"
 	"rentify/exception"
 	"rentify/service"
 
@@ -20,7 +20,7 @@ func NewAuthHandler(authService service.AuthService) AuthHandler {
 }
 
 func (slf *AuthHandler) Login(ctx *gin.Context) {
-	var payload dto.PostLoginReq
+	var payload rest.PostLoginReq
 	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
@@ -65,7 +65,7 @@ func (slf *AuthHandler) Login(ctx *gin.Context) {
 }
 
 func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
-	var payload dto.PostCheckTokenReq
+	var payload rest.PostCheckTokenReq
 	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
@@ -117,7 +117,7 @@ func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 }
 
 func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
-	var payload dto.PostSetRoleFromTokenReq
+	var payload rest.PostSetRoleFromTokenReq
 	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{
@@ -190,7 +190,7 @@ func (slf *AuthHandler) SetRoleFromToken(ctx *gin.Context) {
 }
 
 func (slf *AuthHandler) Register(ctx *gin.Context) {
-	var payload dto.PostRegisterReq
+	var payload rest.PostRegisterReq
 	err := ctx.BindJSON(&payload)
 	if err != nil {
 		ctx.JSON(400, gin.H{

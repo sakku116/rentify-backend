@@ -1,4 +1,4 @@
-package dto
+package rest
 
 type PostLoginReq struct {
 	Username string `json:"username"`

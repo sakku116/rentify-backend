@@ -3,10 +3,10 @@ package cli
 import (
 	"context"
 	"fmt"
-	"rentify/entity"
+	"rentify/domain/entity"
 	"rentify/exception"
-	"rentify/helper"
 	"rentify/repository"
+	"rentify/utils/helper"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"

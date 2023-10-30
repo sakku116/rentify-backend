@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"rentify/entity"
+	"rentify/domain/entity"
 	"rentify/exception"
 
 	"github.com/qiniu/qmgo"

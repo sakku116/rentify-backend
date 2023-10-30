@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"rentify/config"
-	"rentify/entity"
+	"rentify/domain/entity"
 	"rentify/exception"
-	"rentify/helper"
 	"rentify/repository"
+	"rentify/utils/helper"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -76,7 +76,7 @@ func (slf *AuthService) CheckToken(ctx context.Context, token string) (*entity.U
 		return nil, exception.AuthUserNotFound
 	}
 
-	if user.IsActive == false {
+	if !user.IsActive {
 		return nil, exception.AuthUserBanned
 	}
 
@@ -111,9 +111,6 @@ raises:
 - exception.UserAlreadyExistByUsername
 */
 func (slf *AuthService) Register(ctx context.Context, username string, email string, password string) error {
-	// TODO: email validation
-	// TODO: password validation
-
 	// user & email existance validation
 	userByUsername, _ := slf.userRepo.GetByUsername(ctx, username)
 	if userByUsername != nil {
