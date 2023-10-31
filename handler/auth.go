@@ -10,10 +10,17 @@ import (
 
 type AuthHandler struct {
 	respWriter  http_response.IResponseWriter
-	authService service.AuthService
+	authService service.IAuthService
 }
 
-func NewAuthHandler(respWriter http_response.IResponseWriter, authService service.AuthService) AuthHandler {
+type IAuthHandler interface {
+	Login(ctx *gin.Context)
+	CheckToken(ctx *gin.Context)
+	SetRoleFromToken(ctx *gin.Context)
+	Register(ctx *gin.Context)
+}
+
+func NewAuthHandler(respWriter http_response.IResponseWriter, authService service.IAuthService) AuthHandler {
 	return AuthHandler{
 		respWriter:  respWriter,
 		authService: authService,

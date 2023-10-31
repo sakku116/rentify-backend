@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JWTMiddleware(respWriter http_response.IResponseWriter, authService service.AuthService) gin.HandlerFunc {
+func JWTMiddleware(respWriter http_response.IResponseWriter, authService service.IAuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 

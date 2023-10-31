@@ -13,8 +13,18 @@ type UserRepo struct {
 	coll *qmgo.Collection
 }
 
-func NewUserRepo(coll *qmgo.Collection) UserRepo {
-	return UserRepo{
+type IUserRepo interface {
+	Create(ctx context.Context, user *entity.User) error
+	Update(ctx context.Context, update *entity.User) error
+	Patch(ctx context.Context, id string, patch_payload bson.M) error
+	GetByID(ctx context.Context, id string) (*entity.User, error)
+	GetByUsername(ctx context.Context, username string) (*entity.User, error)
+	GetList(ctx context.Context) ([]entity.User, error)
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)
+}
+
+func NewUserRepo(coll *qmgo.Collection) IUserRepo {
+	return &UserRepo{
 		coll: coll,
 	}
 }

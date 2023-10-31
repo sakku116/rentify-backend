@@ -15,11 +15,18 @@ import (
 )
 
 type AuthService struct {
-	userRepo repository.UserRepo
+	userRepo repository.IUserRepo
 }
 
-func NewAuthService(userRepo repository.UserRepo) AuthService {
-	return AuthService{
+type IAuthService interface {
+	Login(ctx context.Context, username string, password string) (string, error)
+	CheckToken(ctx context.Context, token string) (*entity.User, error)
+	SetRole(ctx context.Context, user_id string, role string) error
+	Register(ctx context.Context, username string, email string, password string) error
+}
+
+func NewAuthService(userRepo repository.IUserRepo) IAuthService {
+	return &AuthService{
 		userRepo: userRepo,
 	}
 }

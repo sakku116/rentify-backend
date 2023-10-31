@@ -14,7 +14,7 @@ import (
 
 // args should be empty for default seed (superuser;superuser@gmail.com;superuser)
 // or args must be containing 3 strings for custom username, email and passwords
-func SeedSuperuser(userRepo repository.UserRepo, args ...string) {
+func SeedSuperuser(userRepo repository.IUserRepo, args ...string) {
 	ctx := context.Background()
 
 	// validate args
