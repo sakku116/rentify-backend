@@ -13,3 +13,6 @@
         ```
         go run .seed-superuser superuser1 superuser1@gmail.com superuserpass
         ```
+
+## app design
+https://www.figma.com/file/29shW48NZeNPn1sOJS2tiq/Rent-House-UI?type=design&node-id=0-1&mode=design - designed by Dirga Alfian Komara
