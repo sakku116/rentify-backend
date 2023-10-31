@@ -1,22 +1,19 @@
 package middleware
 
 import (
-	"rentify/exception"
 	"rentify/service"
+	"rentify/utils/http_response"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func JWTMiddleware(authService service.AuthService) gin.HandlerFunc {
+func JWTMiddleware(respWriter http_response.IResponseWriter, authService service.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 
 		if tokenString == "" {
-			c.JSON(401, gin.H{
-				"error":   true,
-				"message": "Authorization header is missing",
-			})
+			respWriter.HTTPJsonErr(c, 401, "Authorization header is missing", "", nil)
 			c.Abort()
 			return
 		}
@@ -25,33 +22,15 @@ func JWTMiddleware(authService service.AuthService) gin.HandlerFunc {
 
 		user, err := authService.CheckToken(c, token)
 		if err != nil {
-			switch err {
-			case exception.AuthInvalidToken, exception.AuthUserNotFound:
-				c.JSON(400, gin.H{
-					"error":   true,
-					"message": "invalid token",
-				})
-			case exception.AuthUserBanned:
-				c.JSON(403, gin.H{
-					"error":   true,
-					"message": "user is banned",
-				})
-			default:
-				c.JSON(500, gin.H{
-					"error":   true,
-					"message": err.Error(),
-				})
-			}
+			respWriter.HTTPCustomErr(c, err)
 			c.Abort()
 			return
 		}
 
 		// check for role
 		if user.Role == "" {
-			c.JSON(403, gin.H{
-				"error":   true,
-				"message": "role is not set",
-			})
+			respWriter.HTTPJsonErr(c, 403, "role is not set", "", nil)
+			c.Abort()
 			return
 		}
 

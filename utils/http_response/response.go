@@ -9,15 +9,16 @@ import (
 type ResponseWriter struct{}
 
 type IResponseWriter interface {
-	HTTPError(ctx *gin.Context, err error)
-	HTTPJSON(ctx *gin.Context, code int, message string, detail string, data interface{})
+	HTTPCustomErr(ctx *gin.Context, err error)
+	HTTPJsonErr(ctx *gin.Context, code int, message string, detail string, data interface{})
+	HTTPJson(ctx *gin.Context, data interface{})
 }
 
 func NewResponseWriter() IResponseWriter {
 	return &ResponseWriter{}
 }
 
-func (r *ResponseWriter) HTTPError(ctx *gin.Context, err error) {
+func (r *ResponseWriter) HTTPCustomErr(ctx *gin.Context, err error) {
 	customErr, ok := err.(*error_utils.CustomErr)
 	if ok {
 		ctx.JSON(customErr.Code, gin.H{
@@ -36,11 +37,20 @@ func (r *ResponseWriter) HTTPError(ctx *gin.Context, err error) {
 	})
 }
 
-func (r *ResponseWriter) HTTPJSON(ctx *gin.Context, code int, message string, detail string, data interface{}) {
+func (r *ResponseWriter) HTTPJsonErr(ctx *gin.Context, code int, message string, detail string, data interface{}) {
 	ctx.JSON(code, gin.H{
-		"error":   false,
+		"error":   true,
 		"message": message,
 		"detail":  detail,
+		"data":    data,
+	})
+}
+
+func (r *ResponseWriter) HTTPJson(ctx *gin.Context, data interface{}) {
+	ctx.JSON(200, gin.H{
+		"error":   false,
+		"message": "OK",
+		"detail":  "",
 		"data":    data,
 	})
 }
