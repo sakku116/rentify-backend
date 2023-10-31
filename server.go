@@ -43,7 +43,7 @@ func SetupRouter(router *gin.Engine) {
 
 	secureRouter := router.Group("/")
 	{
-		secureRouter.Use(middleware.JWTMiddleware(authService))
+		secureRouter.Use(middleware.JWTMiddleware(responseWriter, authService))
 
 	}
 }
