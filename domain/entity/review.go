@@ -1,6 +1,6 @@
 package entity
 
-type User struct {
+type Review struct {
 	ID        string `json:"id" bson:"id"`
 	CreatedAt int64  `json:"created_at" bson:"created_at"`
 	UpdatedAt int64  `json:"updated_at" bson:"updated_at"`
@@ -9,11 +9,7 @@ type User struct {
 	UpdatedBy string `json:"updated_by" bson:"updated_by"`
 	DeletedBy string `json:"deleted_by" bson:"deleted_by"`
 
-	Username  string `json:"username" bson:"username"`
-	Email     string `json:"email" bson:"email"`
-	Password  string `json:"password" bson:"password"`
-	IsActive  bool   `json:"is_active,omitempty" bson:"is_active"`
-	SessionID string `json:"session_id" bson:"session_id"`
-	Role      string `json:"role" bson:"role"`
-	Image     string `json:"image" bson:"image"`
+	AccommodationID string `json:"accommodation_id" bson:"accommodation_id"`
+	Rating          int8   `json:"rating" bson:"rating"`
+	Comment         string `json:"comment" bson:"comment"`
 }
