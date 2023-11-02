@@ -1,6 +1,6 @@
 # renfity backend
 
-## required cli commands
+## cli commands
 - `seed-superuser`
     - args (optional):
         args should be empty for default seed (superuser;superuser@gmail.com;superuser). Or args must be containing 3 strings for custom username, email and passwords
