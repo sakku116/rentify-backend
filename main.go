@@ -18,7 +18,7 @@ func main() {
 		log.Println("starting rest api app...")
 
 		router := gin.Default()
-		SetupRouter(router)
+		SetupServer(router)
 		router.Run(config.Envs.ADDR)
 
 		fmt.Println("starting rest api app...")

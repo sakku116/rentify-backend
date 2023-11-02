@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(router *gin.Engine) {
+func SetupServer(router *gin.Engine) {
 	ctx := context.Background()
 	mongoConn := config.NewMongoConn(ctx)
 
