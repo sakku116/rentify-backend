@@ -1,4 +1,4 @@
-# renfity backend
+# renfity backend (still on development)
 
 ## cli commands
 - `seed-superuser`
