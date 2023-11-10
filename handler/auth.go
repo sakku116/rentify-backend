@@ -27,6 +27,12 @@ func NewAuthHandler(respWriter http_response.IResponseWriter, authService servic
 	}
 }
 
+// Login
+// @Summary generate jwt token
+// @Tags Auth
+// @Success 200 {object} rest.BaseJSONResp{data=rest.AuthLoginResp}
+// @Router /auth/login [post]
+// @param payload  body  rest.PostLoginReq  true "payload"
 func (slf *AuthHandler) Login(ctx *gin.Context) {
 	var payload rest.PostLoginReq
 	err := ctx.BindJSON(&payload)
@@ -41,11 +47,18 @@ func (slf *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	slf.respWriter.HTTPJson(ctx, gin.H{
-		"access_token": token,
+	slf.respWriter.HTTPJson(ctx, rest.AuthLoginResp{
+		AccessToken: token,
 	})
 }
 
+// CheckToken
+// @Summary check jwt token
+// @Tags Auth
+// @Success 200 {object} rest.BaseJSONResp{data=rest.AuthLoginResp}
+// @Router /auth/check-token [post]
+// @Security JWTAuth
+// @param payload  body  rest.PostCheckTokenReq  true "payload"
 func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 	var payload rest.PostCheckTokenReq
 	err := ctx.BindJSON(&payload)
@@ -60,9 +73,9 @@ func (slf *AuthHandler) CheckToken(ctx *gin.Context) {
 		return
 	}
 
-	slf.respWriter.HTTPJson(ctx, gin.H{
-		"username": user.Username,
-		"role":     user.Role,
+	slf.respWriter.HTTPJson(ctx, rest.AuthCheckTokenResp{
+		Username: user.Username,
+		Role:     user.Role,
 	})
 }
 

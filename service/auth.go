@@ -43,8 +43,8 @@ func (slf *AuthService) Login(ctx context.Context, username string, password str
 	oldUser, err := slf.userRepo.GetByUsername(ctx, username)
 	if err != nil {
 		return "", &error_utils.CustomErr{
-			Code:    404,
-			Message: "user not found",
+			Code:    400,
+			Message: "username not found",
 		}
 	}
 

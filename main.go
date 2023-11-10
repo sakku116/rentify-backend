@@ -5,10 +5,16 @@ import (
 	"log"
 	"os"
 	"rentify/config"
+	_ "rentify/docs"
 
 	"github.com/gin-gonic/gin"
 )
 
+// @title Rentify API
+// @securitydefinitions.apiKey BearerAuth
+// @in header
+// @name Authorization
+// @default Bearer {token}
 func main() {
 	args := os.Args
 	if len(args) > 1 {

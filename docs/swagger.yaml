@@ -1,4 +1,84 @@
+definitions:
+  rest.AuthLoginResp:
+    properties:
+      access_token:
+        type: string
+    type: object
+  rest.BaseJSONResp:
+    properties:
+      data: {}
+      detail:
+        type: string
+      error:
+        type: boolean
+      message:
+        type: string
+    type: object
+  rest.PostCheckTokenReq:
+    properties:
+      token:
+        type: string
+    type: object
+  rest.PostLoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+  title: Rentify API
+paths:
+  /auth/check-token:
+    post:
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/rest.PostCheckTokenReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.BaseJSONResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/rest.AuthLoginResp'
+              type: object
+      security:
+      - JWTAuth: []
+      summary: check jwt token
+      tags:
+      - Auth
+  /auth/login:
+    post:
+      parameters:
+      - description: payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/rest.PostLoginReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.BaseJSONResp'
+            - properties:
+                data:
+                  $ref: '#/definitions/rest.AuthLoginResp'
+              type: object
+      summary: generate jwt token
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

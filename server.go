@@ -10,6 +10,8 @@ import (
 	"rentify/utils/http_response"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupServer(router *gin.Engine) {
@@ -27,7 +29,6 @@ func SetupServer(router *gin.Engine) {
 
 	// handlers
 	authHandler := handler.NewAuthHandler(responseWriter, authService)
-
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"error":   false,
@@ -43,6 +44,8 @@ func SetupServer(router *gin.Engine) {
 	secureRouter := router.Group("/")
 	{
 		secureRouter.Use(middleware.JWTMiddleware(responseWriter, authService))
-
 	}
+
+	// swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
