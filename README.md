@@ -1,4 +1,4 @@
-# Rentify Backend (development)
+# Backend Challenge Synapsis
 
 ## API Documentation
 go to `/swagger/index.html` to see API documentation.

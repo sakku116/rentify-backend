@@ -29,5 +29,4 @@ func main() {
 
 		fmt.Println("starting rest api app...")
 	}
-
 }
