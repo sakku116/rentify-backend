@@ -1,4 +1,4 @@
-# Rentify Backend (development)
+# Rentify Backend (on development)
 
 ## API Documentation
 go to `/swagger/index.html` to see API documentation.
