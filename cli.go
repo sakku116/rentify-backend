@@ -15,7 +15,7 @@ func CliHandler(args []string) {
 
 	mongoConn := config.NewMongoConn(ctx)
 	defer mongoConn.Close(ctx)
-	mongoDB := mongoConn.Database("rentify")
+	mongoDB := mongoConn.Database(config.Envs.MONGO_DB_NAME)
 
 	userRepo := repository.NewUserRepo(mongoDB.Collection("users"))
 

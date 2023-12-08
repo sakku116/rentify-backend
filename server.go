@@ -18,7 +18,7 @@ func SetupServer(router *gin.Engine) {
 	ctx := context.Background()
 	mongoConn := config.NewMongoConn(ctx)
 
-	mongoDb := mongoConn.Database("rentify")
+	mongoDb := mongoConn.Database(config.Envs.MONGO_DB_NAME)
 	responseWriter := http_response.NewResponseWriter()
 
 	// repositories
