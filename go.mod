@@ -1,8 +1,6 @@
 module rentify
 
-go 1.21
-
-toolchain go1.21.3
+go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
