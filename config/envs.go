@@ -8,7 +8,8 @@ import (
 )
 
 type EnvsSchema struct {
-	ADDR          string
+	HOST          string
+	PORT          int
 	JWT_SECRET    string
 	JWT_EXP       int
 	MONGO_URI     string
@@ -27,7 +28,8 @@ func init() {
 	viper.AutomaticEnv()
 
 	Envs = &EnvsSchema{
-		ADDR:          viper.GetString("ADDR"),
+		HOST:          viper.GetString("HOST"),
+		PORT:          viper.GetInt("PORT"),
 		JWT_SECRET:    viper.GetString("JWT_SECRET"),
 		JWT_EXP:       viper.GetInt("JWT_EXP"),
 		MONGO_URI:     viper.GetString("MONGO_URI"),

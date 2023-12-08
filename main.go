@@ -6,6 +6,7 @@ import (
 	"os"
 	"rentify/config"
 	_ "rentify/docs"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +26,7 @@ func main() {
 
 		router := gin.Default()
 		SetupServer(router)
-		router.Run(config.Envs.ADDR)
+		router.Run(config.Envs.HOST + ":" + strconv.Itoa(config.Envs.PORT))
 
 		fmt.Println("starting rest api app...")
 	}
