@@ -34,7 +34,7 @@ func SeedSuperuser(userRepo repository.IUserRepo, args ...string) {
 
 	// check for existing user
 	existingUser, err := userRepo.GetByUsername(ctx, username)
-	if err != nil && err != exception.DbObjNotFound {
+	if err != nil && err != exception.DbObjNotFoundErr {
 		panic(err)
 	}
 	if existingUser != nil {

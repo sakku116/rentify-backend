@@ -64,7 +64,7 @@ func (slf *UserRepo) GetByID(ctx context.Context, id string) (*entity.User, erro
 	var user entity.User
 	err := slf.coll.Find(ctx, bson.M{"id": id}).One(&user)
 	if err == qmgo.ErrNoSuchDocuments {
-		return nil, exception.DbObjNotFound
+		return nil, exception.DbObjNotFoundErr
 	} else if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (slf *UserRepo) GetByUsername(ctx context.Context, username string) (*entit
 	var user entity.User
 	err := slf.coll.Find(ctx, bson.M{"username": username}).One(&user)
 	if err == qmgo.ErrNoSuchDocuments {
-		return nil, exception.DbObjNotFound
+		return nil, exception.DbObjNotFoundErr
 	} else if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (slf *UserRepo) GetByEmail(ctx context.Context, email string) (*entity.User
 	var user entity.User
 	err := slf.coll.Find(ctx, bson.M{"email": email}).One(&user)
 	if err == qmgo.ErrNoSuchDocuments {
-		return nil, exception.DbObjNotFound
+		return nil, exception.DbObjNotFoundErr
 	} else if err != nil {
 		return nil, err
 	}
